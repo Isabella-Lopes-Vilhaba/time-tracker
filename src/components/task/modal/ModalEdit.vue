@@ -19,6 +19,13 @@
                 ></v-text-field>
               </v-col>
               <v-col cols="12" sm="6">
+                <v-text-field
+                  label="Descrição"
+                  variant="outlined"
+                  v-model="updatedTask.description"
+                ></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="6">
                 <v-select
                   :items="computedProjects"
                   item-title="name"
@@ -30,12 +37,15 @@
                   required
                 ></v-select>
               </v-col>
-              <v-col cols="12">
-                <v-text-field
-                  label="Descrição"
+              <v-col cols="12" sm="6">
+                <v-select
+                  :items="computedCollaborators"
+                  item-title="name"
+                  item-value="id"
+                  label="Colaborador"
                   variant="outlined"
-                  v-model="updatedTask.description"
-                ></v-text-field>
+                  v-model="updatedTask.collaboratorId"
+                ></v-select>
               </v-col>
             </v-row>
             <small>* Indica os campos obrigatórios</small>
@@ -89,6 +99,9 @@ export default {
     computedProjects() {
       return [...this.$store.state.projects];
     },
+    computedCollaborators() {
+      return [...this.$store.state.collaborators];
+    }
   },
   methods: {
     editTask() {

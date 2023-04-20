@@ -15,19 +15,44 @@ export default {
         }).then(() => {
           commit('getUsers')
         })
+      } else {
+        commit('getUsers')
       }
     })
     db.collection('collaborators').get().then(collaboratorsDB => {
       if(!collaboratorsDB.length) {
         db.collection('collaborators').add({
           id: 2,
+          name: "Anna",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          deletedAt: null
+        })
+        db.collection('collaborators').add({
+          id: 3,
           name: "João",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          deletedAt: null
+        })
+        db.collection('collaborators').add({
+          id: 4,
+          name: "Mariana",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          deletedAt: null
+        })
+        db.collection('collaborators').add({
+          id: 5,
+          name: "Carlos",
           createdAt: new Date(),
           updatedAt: new Date(),
           deletedAt: null
         }).then(() => {
           commit('getCollaborators')
         })
+      } else {
+        commit('getCollaborators')
       }
     })
   },
@@ -88,6 +113,7 @@ export default {
       done: false,
       description: task.description,
       projectId: task.projectId,
+      collaboratorId: task.collaboratorId,
       createdAt: new Date(),
       updatedAt: new Date(),
       timeTrackers: []
@@ -96,18 +122,16 @@ export default {
     })
   },
   updateTask({commit}, updatedTask) {
-    console.log(updatedTask.timeTrackers)
     db.collection('tasks').doc({ id: updatedTask.id }).update({
       title: updatedTask.title,
       description: updatedTask.description,
       projectId: updatedTask.projectId,
+      collaboratorId: updatedTask.collaboratorId,
       updatedAt: new Date(),
       timeTrackers: [...updatedTask.timeTrackers]
     }).then(() => {
       commit('getTasks')
-    }).catch(erro => {
-      console.log('Erro!', erro);
-    });
+    })
   },
   updateStatusTask({commit}, updatedTask) {
     db.collection('tasks').doc({ id: updatedTask.id }).update({
