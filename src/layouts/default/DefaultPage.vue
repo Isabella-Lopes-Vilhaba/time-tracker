@@ -83,6 +83,8 @@ export default {
   }),
   created() {
     this.$router.push("/task");
+    this.$store.commit("getTasks");
+    this.$store.commit("getProjects");
     this.$store.dispatch("popularDatabase");
   },
 };

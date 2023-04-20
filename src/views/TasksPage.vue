@@ -37,9 +37,6 @@ export default {
   data: () => ({
     modalAdd: false,
   }),
-  created() {
-    this.$store.commit("getTasks");
-  },
   methods: {
     openModalAdd() {
       this.modalAdd = true;

@@ -15,13 +15,6 @@ export default {
     })
   },
 
-  // timeTrackers
-  getTimeTrackers(state) {
-    db.collection('timeTrackers').get().then(timeTrackersDB => {
-      state.timeTrackers = timeTrackersDB
-    })
-  },
-
   // tasks
   getTasks(state) {
     db.collection('tasks').get().then(tasksDB => {

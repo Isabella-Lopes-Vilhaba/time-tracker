@@ -20,7 +20,9 @@
               </v-col>
               <v-col cols="12" sm="6">
                 <v-select
-                  :items="['Projeto 1', 'Projeto 2', 'Projeto 3', 'Projeto 4']"
+                  :items="computedProjects"
+                  item-title="name"
+                  item-value="id"
                   label="Projeto*"
                   variant="outlined"
                   v-model="updatedTask.projectId"
@@ -82,6 +84,11 @@ export default {
   }),
   created() {
     this.updatedTask = Object.assign({}, this.task);
+  },
+  computed: {
+    computedProjects() {
+      return [...this.$store.state.projects];
+    },
   },
   methods: {
     editTask() {
