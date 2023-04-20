@@ -1,6 +1,28 @@
 import db from "@/services/localbase"
 
 export default {
+  // users
+  getUsers(state) {
+    db.collection('users').get().then(usersDB => {
+      state.users = usersDB
+    })
+  },
+
+  // collaborators
+  getCollaborators(state) {
+    db.collection('collaborators').get().then(collaboratorsDB => {
+      state.collaborators = collaboratorsDB
+    })
+  },
+
+  // timeTrackers
+  getTimeTrackers(state) {
+    db.collection('timeTrackers').get().then(timeTrackersDB => {
+      state.timeTrackers = timeTrackersDB
+    })
+  },
+
+  // tasks
   getTasks(state) {
     db.collection('tasks').get().then(tasksDB => {
       state.tasks = tasksDB
@@ -11,5 +33,12 @@ export default {
     if(index !== -1) {
       state.tasks[index].done = !state.tasks[index].done
     }
+  },
+
+  // projects
+  getProjects(state) {
+    db.collection('projects').get().then(projectsDB => {
+      state.projects = projectsDB
+    })
   },
 }

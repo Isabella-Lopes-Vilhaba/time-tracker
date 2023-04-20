@@ -1,3 +1,7 @@
 export default {
-  tasks: []
+  users: [],
+  collaborators: [],
+  timeTrackers: [],
+  tasks: [],
+  projects: []
 }

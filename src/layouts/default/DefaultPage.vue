@@ -57,38 +57,33 @@
     </v-app-bar>
 
     <v-main>
-      <TasksPage />
       <router-view />
     </v-main>
   </v-app>
 </template>
 
 <script>
-import TasksPage from "@/views/TasksPage.vue";
 export default {
   data: () => ({
     drawer: null,
     items: [
       {
-        prependicon: "mdi-home-city",
+        prependicon: "mdi-calendar-check-outline",
         title: "Tarefas",
         value: "tarefas",
-        to: "/ ",
+        to: "/task",
       },
       {
-        prependicon: "mdi-account",
+        prependicon: "mdi-note-edit-outline",
         title: "Projetos",
         value: "projetos",
         to: "/projects",
-      },
-      {
-        prependicon: "mdi-account",
-        title: "Colaboradores",
-        value: "colaboradores",
-        to: "/collaborators",
-      },
+      }
     ],
   }),
-  components: { TasksPage },
+  created() {
+    this.$router.push("/task");
+    this.$store.dispatch("popularDatabase");
+  },
 };
 </script>

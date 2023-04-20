@@ -1,14 +1,16 @@
 <template>
   <div>
-    <v-col cols="12">
-      <v-text-field
-        v-model="inputField"
-        label="Qual sua tarefa"
+    <v-row class="justify-end">
+      <v-btn
+        class="ma-10 font-weight-bold"
+        color="deep-purple-accent-1"
+        append-icon="mdi-plus-thick"
         variant="outlined"
-        clearable
-        @keyup.enter="handleAddTask"
-      ></v-text-field>
-    </v-col>
+        @click="openModalAdd()"
+      >
+        Nova tarefa
+      </v-btn>
+    </v-row>
     <ListTasks />
     <div
       v-if="!$store.state.tasks.length"
@@ -19,26 +21,31 @@
         <div class="text-h5 text-deep-purple-accent-1">Nenhuma tarefa</div>
       </center>
     </div>
+    <ModalAdd v-if="modalAdd" @closeModal="closeModalAdd()" />
   </div>
 </template>
 
 <script>
-import ListTasks from "@/components/task/ListTasks.vue";
+import ListTasks from "@/components/task/ListTasks";
+import ModalAdd from "@/components/task/modal/ModalAdd";
 export default {
   name: "TasksPage",
   components: {
     ListTasks,
+    ModalAdd,
   },
   data: () => ({
-    inputField: null,
+    modalAdd: false,
   }),
   created() {
     this.$store.commit("getTasks");
   },
   methods: {
-    handleAddTask() {
-      this.$store.dispatch("addTask", this.inputField);
-      this.inputField = null;
+    openModalAdd() {
+      this.modalAdd = true;
+    },
+    closeModalAdd() {
+      this.modalAdd = false;
     },
   },
 };

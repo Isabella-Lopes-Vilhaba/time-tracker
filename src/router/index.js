@@ -7,7 +7,7 @@ const routes = [
     component: () => import('@/layouts/default/DefaultPage.vue'),
     children: [
       {
-        path: ' ',
+        path: 'task',
         name: 'Tasks',
         component: () => import('@/views/TasksPage.vue'),
       },
@@ -15,12 +15,7 @@ const routes = [
         path: 'projects',
         name: 'Projects',
         component: () => import('@/views/ProjectsPage.vue'),
-      },
-      {
-        path: 'collaborators',
-        name: 'Collaborators',
-        component: () => import('@/views/CollaboratorsPage.vue'),
-      },
+      }
     ],
   },
 ]

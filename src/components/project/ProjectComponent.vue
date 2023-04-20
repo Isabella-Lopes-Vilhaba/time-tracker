@@ -1,16 +1,9 @@
 <template>
   <div>
     <v-list-item
-      :class="{ 'bg-deep-purple-accent-1': task.done }"
-      @click="updateStatusTask(task)"
-      :value="task"
+      :value="project"
     >
-      <template v-slot:prepend="">
-        <v-list-item-action start>
-          <v-checkbox-btn :model-value="task.done"></v-checkbox-btn>
-        </v-list-item-action>
-      </template>
-      <v-list-item-title>{{ task.title }}</v-list-item-title>
+      <v-list-item-title>{{ project.name }}</v-list-item-title>
       <template v-slot:append>
         <v-btn
           color="grey-darken-2"
@@ -27,11 +20,11 @@
       </template>
     </v-list-item>
     <v-divider></v-divider>
-    <ModalEdit v-if="modalEdit" @closeModal="closeModalEdit()" :task="task" />
+    <ModalEdit v-if="modalEdit" @closeModal="closeModalEdit()" :project="project" />
     <ModalDelete
       v-if="modalDelete"
       @closeModal="closeModalDelete()"
-      :task="task"
+      :project="project"
     />
   </div>
 </template>
@@ -42,7 +35,7 @@ import ModalEdit from "./modal/ModalEdit";
 
 export default {
   props: {
-    task: {
+    project: {
       type: Object,
       required: true,
     },
@@ -53,9 +46,6 @@ export default {
   }),
   components: { ModalEdit, ModalDelete },
   methods: {
-    updateStatusTask(updatedTask) {
-      this.$store.dispatch("updateStatusTask", updatedTask);
-    },
     openModalEdit() {
       this.modalEdit = true;
     },
