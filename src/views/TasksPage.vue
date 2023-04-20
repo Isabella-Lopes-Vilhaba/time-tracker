@@ -1,8 +1,6 @@
 <template>
   <div>
-    <v-col
-      cols="12"
-    >
+    <v-col cols="12">
       <v-text-field
         v-model="inputField"
         label="Qual sua tarefa"
@@ -11,34 +9,28 @@
         @keyup.enter="handleAddTask"
       ></v-text-field>
     </v-col>
-    <v-list select-strategy="classic">
-      <div
-        v-for="task, index in $store.state.tasks"
-        :key="index"
-      >
-        <TaskComponent
-          :task="task"
-        />
-      </div>
-    </v-list>
+    <ListTasks />
   </div>
 </template>
 
 <script>
-  import TaskComponent from '@/components/task/TaskComponent.vue';
-  export default {
-    name: 'TasksPage',
-    components: {
-      TaskComponent
+import ListTasks from "@/components/task/ListTasks.vue";
+export default {
+  name: "TasksPage",
+  components: {
+    ListTasks,
+  },
+  data: () => ({
+    inputField: null,
+  }),
+  created() {
+    this.$store.commit("getTasks");
+  },
+  methods: {
+    handleAddTask() {
+      this.$store.dispatch("addTask", this.inputField);
+      this.inputField = null;
     },
-    data: () => ({
-        inputField: null
-    }),
-    methods: {
-      handleAddTask() {
-        this.$store.commit('addTask', this.inputField)
-        this.inputField = null
-      }
-    }
-  }
+  },
+};
 </script>

@@ -1,33 +1,56 @@
 import { createStore } from 'vuex'
+import Localbase from 'localbase'
+
+let db = new Localbase('db')
 
 const store = createStore({
   state: {
-    tasks: [
-      { id: 1, title: "Ir ao mercado", done: false },
-      { id: 2, title: "Comprar pão", done: false },
-    ]
+    tasks: []
   },
   mutations: {
-    addTask(state, title) {
-      if(title) {
-        state.tasks.push({
-          id: new Date().getTime(),
-          title,
-          done: false
-        })
-      }
+    getTasks(state) {
+      db.collection('tasks').get().then(tasksDB => {
+        state.tasks = tasksDB
+      })
     },
-    updateTask(state, updatedTaskId) {
+    updateStatusTask(state, updatedTaskId) {
       const index = state.tasks.findIndex(task => task.id === updatedTaskId)
       if(index !== -1) {
         state.tasks[index].done = !state.tasks[index].done
       }
     },
-    removeTask(state, removedTaskId) {
-      state.tasks = state.tasks.filter(task => task.id !== removedTaskId)
+  },
+  actions: {
+    addTask({commit}, title) {
+      db.collection('tasks').add({
+        id: new Date().getTime(),
+        title,
+        done: false
+      }).then(() => {
+        commit('getTasks')
+      })
+    },
+    updateTask({commit}, updatedTask) {
+      db.collection('tasks').doc({ id: updatedTask.id }).update({
+        title: updatedTask.title
+      }).then(() => {
+        commit('getTasks')
+      })
+    },
+    updateStatusTask({commit}, updatedTask) {
+      db.collection('tasks').doc({ id: updatedTask.id }).update({
+        done: !updatedTask.done
+      }).then(() => {
+        commit('updateStatusTask', updatedTask.id)
+      })
+    },
+    removeTask({commit}, removedTaskId) {
+      db.collection('tasks').doc({ id: removedTaskId }).delete()
+      .then(() => {
+        commit('getTasks')
+      })
     }
   },
-  actions: {},
   modules: {}
 })
 
