@@ -10,6 +10,15 @@
       ></v-text-field>
     </v-col>
     <ListTasks />
+    <div
+      v-if="!$store.state.tasks.length"
+      class="mt-16 animate__animated animate__bounceInUp"
+    >
+      <center>
+        <v-icon size="100" color="deep-purple-accent-1">mdi-check</v-icon>
+        <div class="text-h5 text-deep-purple-accent-1">Nenhuma tarefa</div>
+      </center>
+    </div>
   </div>
 </template>
 

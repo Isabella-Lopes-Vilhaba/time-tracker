@@ -67,7 +67,7 @@
 import TasksPage from "@/views/TasksPage.vue";
 export default {
   data: () => ({
-    drawer: true,
+    drawer: null,
     items: [
       {
         prependicon: "mdi-home-city",
