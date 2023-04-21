@@ -76,9 +76,7 @@ export default {
         timeTrackers: newTimeTrackers
       }).then(() => {
         commit('getTasks')
-      }).catch((error) => {
-        console.log('Error updating document:', error);
-      });
+      })
     }
   },
   updateTimeTracker({state, commit}, data) {

@@ -1,6 +1,27 @@
 <template>
   <div>
-    <v-row class="justify-end">
+    <v-row class="flex-row justify-space-between align-center">
+      <v-card
+        width="400"
+        class="bg-deep-purple-accent-1 ma-10 flex-row justify-center align-center pt-2 pb-2"
+      >
+        <v-row class="pa-2">
+          <v-col cols="6" class="pa-0">
+            <v-card-text class="text-center pt-2 pb-0 font-weight-bold"
+              >Hoje</v-card-text
+            >
+            <v-card-text class="text-center pt-2 pb-2">{{ today }}</v-card-text>
+          </v-col>
+          <v-col cols="6" class="pa-0">
+            <v-card-text class="text-center pt-2 pb-0 font-weight-bold"
+              >Este mês</v-card-text
+            >
+            <v-card-text class="text-center pt-2 pb-2">{{
+              thisMonth
+            }}</v-card-text>
+          </v-col>
+        </v-row>
+      </v-card>
       <v-btn
         class="ma-10 font-weight-bold"
         color="deep-purple-accent-1"
@@ -36,7 +57,68 @@ export default {
   },
   data: () => ({
     modalAdd: false,
+    tasks: [],
   }),
+  computed: {
+    today() {
+      const today = new Date(Date.now()).toLocaleDateString();
+      const tasks = this.$store.state.tasks;
+      let filteredTimeTrackers = [];
+
+      tasks.forEach((task) => {
+        const taskTimeTrackerFiltered = task.timeTrackers.filter(
+          (tracker) =>
+            new Date(tracker.startDate).toLocaleDateString() === today
+        );
+        filteredTimeTrackers.push(...taskTimeTrackerFiltered);
+      });
+      const times = filteredTimeTrackers.map(
+        (timeTracker) => timeTracker.endDate - timeTracker.startDate
+      );
+      const sum = times.reduce((total, time) => total + time, 0);
+
+      const hours = Math.floor((sum / (1000 * 60 * 60)) % 24)
+        .toString()
+        .padStart(2, "0");
+      const minutes = Math.floor((sum / (1000 * 60)) % 60)
+        .toString()
+        .padStart(2, "0");
+
+      return `${hours}:${minutes}`;
+    },
+    thisMonth() {
+      const today = new Date();
+      const currentMonthYear = today.toLocaleDateString("en-US", {
+        month: "2-digit",
+        year: "numeric",
+      });
+      const tasks = this.$store.state.tasks;
+      let filteredTimeTrackers = [];
+
+      tasks.forEach((task) => {
+        const taskTimeTrackerFiltered = task.timeTrackers.filter((tracker) => {
+          const trackerMonthYear = new Date(
+            tracker.startDate
+          ).toLocaleDateString("en-US", { month: "2-digit", year: "numeric" });
+          return trackerMonthYear === currentMonthYear;
+        });
+        filteredTimeTrackers.push(...taskTimeTrackerFiltered);
+      });
+
+      const times = filteredTimeTrackers.map(
+        (timeTracker) => timeTracker.endDate - timeTracker.startDate
+      );
+      const sum = times.reduce((total, time) => total + time, 0);
+
+      const hours = Math.floor((sum / (1000 * 60 * 60)) % 24)
+        .toString()
+        .padStart(2, "0");
+      const minutes = Math.floor((sum / (1000 * 60)) % 60)
+        .toString()
+        .padStart(2, "0");
+      return `${hours}:${minutes}`;
+    },
+  },
   methods: {
     openModalAdd() {
       this.modalAdd = true;

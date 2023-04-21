@@ -12,6 +12,15 @@
       </template>
       <v-list-item-title>{{ task.title }}</v-list-item-title>
       <template v-slot:append>
+        <v-chip
+          class="ma-2"
+          color="purple-darken-4"
+          :class="{ 'bg-white': task.done }"
+          label
+        >
+          <v-icon start icon="mdi-clock-outline"></v-icon>
+          {{ fullTime }}
+        </v-chip>
         <v-btn
           v-if="!timerRunning"
           color="grey-darken-2"
@@ -20,7 +29,12 @@
           @click.stop="startTimer()"
         ></v-btn>
         <template v-else>
-          <v-chip class="ma-2" color="deep-purple-accent-1" :class="{ 'bg-white': task.done }" label>
+          <v-chip
+            class="ma-2"
+            color="deep-purple-accent-1"
+            :class="{ 'bg-white': task.done }"
+            label
+          >
             <v-icon start icon="mdi-clock-outline"></v-icon>
             {{ formattedTime }}
           </v-chip>
@@ -79,28 +93,42 @@ export default {
       endDate: null,
       timeZoneId: null,
       createdAt: null,
-      updatedAt: null
-    }
+      updatedAt: null,
+    },
   }),
   components: { ModalEdit, ModalDelete },
   computed: {
     formattedTime() {
       if (this.timerRunning) {
-        let timeDifference = this.currentTime - this.startTime;
-        let hours = Math.floor((timeDifference / (1000 * 60 * 60)) % 24)
+        const timeDifference = this.currentTime - this.startTime;
+        const hours = Math.floor((timeDifference / (1000 * 60 * 60)) % 24)
           .toString()
           .padStart(2, "0");
-        let minutes = Math.floor((timeDifference / (1000 * 60)) % 60)
+        const minutes = Math.floor((timeDifference / (1000 * 60)) % 60)
           .toString()
           .padStart(2, "0");
-        let seconds = Math.floor((timeDifference / 1000) % 60)
+        const seconds = Math.floor((timeDifference / 1000) % 60)
           .toString()
           .padStart(2, "0");
         return `${hours}:${minutes}:${seconds}`;
       } else {
         return "00:00:00";
       }
-    }
+    },
+    fullTime() {
+      const times = this.task.timeTrackers.map(
+        (timeTracker) => timeTracker.endDate - timeTracker.startDate
+      );
+      const sum = times.reduce((total, time) => total + time, 0);
+
+      const hours = Math.floor((sum / (1000 * 60 * 60)) % 24)
+        .toString()
+        .padStart(2, "0");
+      const minutes = Math.floor((sum / (1000 * 60)) % 60)
+        .toString()
+        .padStart(2, "0");
+      return `${hours}:${minutes}`;
+    },
   },
   methods: {
     updateStatusTask(updatedTask) {
@@ -127,28 +155,29 @@ export default {
       }, 10);
     },
     stopTimer() {
-      this.saveTimer()
+      this.saveTimer();
       clearInterval(this.timer);
       this.timerRunning = false;
       this.currentTime = null;
       this.startTime = null;
     },
     saveTimer() {
-      const now = Date.now()
-      this.timeTracker.id = Date.now()
-      this.timeTracker.startDate = this.startTime
-      this.timeTracker.endDate = now
-      this.timeTracker.timeZoneId = Intl.DateTimeFormat().resolvedOptions().timeZone
-      this.timeTracker.createdAt = now
-      this.timeTracker.updatedAt = now
-      this.addTimeTracker()
+      const now = Date.now();
+      this.timeTracker.id = Date.now();
+      this.timeTracker.startDate = this.startTime;
+      this.timeTracker.endDate = now;
+      this.timeTracker.timeZoneId =
+        Intl.DateTimeFormat().resolvedOptions().timeZone;
+      this.timeTracker.createdAt = now;
+      this.timeTracker.updatedAt = now;
+      this.addTimeTracker();
     },
     addTimeTracker() {
-      this.$store.dispatch("addTimeTracker", { 
+      this.$store.dispatch("addTimeTracker", {
         taskId: this.task.id,
         timeTracker: this.timeTracker,
-       });
-    }
+      });
+    },
   },
 };
 </script>
