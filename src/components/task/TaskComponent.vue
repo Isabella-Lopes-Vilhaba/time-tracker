@@ -14,6 +14,24 @@
       <template v-slot:append>
         <v-chip
           class="ma-2"
+          color="blue-lighten-1"
+          :class="{ 'bg-white': task.done }"
+          label
+        >
+          <v-icon start icon="mdi-account"></v-icon>
+          {{ collaborators }}
+        </v-chip>
+        <v-chip
+          class="ma-2"
+          color="indigo-darken-1"
+          :class="{ 'bg-white': task.done }"
+          label
+        >
+          <v-icon start icon="mdi-cog-outline"></v-icon>
+          {{ project }}
+        </v-chip>
+        <v-chip
+          class="ma-2"
           color="purple-darken-4"
           :class="{ 'bg-white': task.done }"
           label
@@ -129,6 +147,14 @@ export default {
         .padStart(2, "0");
       return `${hours}:${minutes}`;
     },
+    collaborators() {
+      const collaborator = Object.assign({}, this.$store.state.collaborators.find(collaborator => collaborator.id === this.task.collaboratorId));
+      return  collaborator.name || "Sem colaborador"
+    },
+    project() {
+      const project = Object.assign({}, this.$store.state.projects.find(project => project.id === this.task.projectId));
+      return project.name || "Sem projeto"
+    }
   },
   methods: {
     updateStatusTask(updatedTask) {
