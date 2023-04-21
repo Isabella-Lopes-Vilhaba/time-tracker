@@ -65,7 +65,7 @@
 <script>
 export default {
   data: () => ({
-    drawer: null,
+    drawer: false,
     items: [
       {
         prependicon: "mdi-calendar-check-outline",
@@ -78,7 +78,7 @@ export default {
         title: "Projetos",
         value: "projetos",
         to: "/projects",
-      }
+      },
     ],
   }),
   created() {

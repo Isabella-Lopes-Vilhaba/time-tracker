@@ -2,8 +2,8 @@
   <div>
     <v-row class="flex-row justify-space-between align-center">
       <v-card
-        width="400"
-        class="bg-deep-purple-accent-1 ma-10 flex-row justify-center align-center pt-2 pb-2"
+        :max-width="400"
+        class="w-100 bg-deep-purple-accent-1 ma-10 flex-row justify-center align-center pt-2 pb-2"
       >
         <v-row class="pa-2">
           <v-col cols="6" class="pa-0">
@@ -22,6 +22,32 @@
           </v-col>
         </v-row>
       </v-card>
+      <v-container class="container mx-auto w-50 flex-row justify-space-around align-center mt-6">
+        <v-row class="selects ma-2">
+          <v-col cols="6" class="column">
+            <v-select
+              class="w-75 slect"
+              :items="computedCollaborators"
+              item-title="name"
+              item-value="id"
+              label="Colaborador"
+              variant="outlined"
+              v-model="collaborator"
+            ></v-select>
+          </v-col>
+          <v-col cols="6">
+            <v-select
+              class="w-75 select"
+              :items="computedProjects"
+              item-title="name"
+              item-value="id"
+              label="projeto"
+              variant="outlined"
+              v-model="project"
+            ></v-select>
+          </v-col>
+        </v-row>
+      </v-container>
       <v-btn
         class="ma-10 font-weight-bold"
         color="deep-purple-accent-1"
@@ -32,7 +58,7 @@
         Nova tarefa
       </v-btn>
     </v-row>
-    <ListTasks />
+    <ListTasks :collaboratorFilter="collaborator" :projectFilter="project" />
     <div
       v-if="!$store.state.tasks.length"
       class="mt-16 animate__animated animate__bounceInUp"
@@ -58,6 +84,8 @@ export default {
   data: () => ({
     modalAdd: false,
     tasks: [],
+    collaborator: 0,
+    project: 0,
   }),
   computed: {
     today() {
@@ -118,6 +146,12 @@ export default {
         .padStart(2, "0");
       return `${hours}:${minutes}`;
     },
+    computedProjects() {
+      return [{id: 0, name: "Todos"}, ...this.$store.state.projects];
+    },
+    computedCollaborators() {
+      return [{id: 0, name: "Todos"}, ...this.$store.state.collaborators];
+    },
   },
   methods: {
     openModalAdd() {
@@ -129,3 +163,11 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+@media (max-width: 600px) {
+  .container {
+    width: 100% !important;
+  }
+}
+</style>

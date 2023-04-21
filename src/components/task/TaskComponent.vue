@@ -13,7 +13,7 @@
       <v-list-item-title>{{ task.title }}</v-list-item-title>
       <template v-slot:append>
         <v-chip
-          class="ma-2"
+          class="ma-2 hide-sm"
           color="blue-lighten-1"
           :class="{ 'bg-white': task.done }"
           label
@@ -22,7 +22,7 @@
           {{ collaborators }}
         </v-chip>
         <v-chip
-          class="ma-2"
+          class="ma-2 hide-sm"
           color="indigo-darken-1"
           :class="{ 'bg-white': task.done }"
           label
@@ -31,7 +31,7 @@
           {{ project }}
         </v-chip>
         <v-chip
-          class="ma-2"
+          class="ma-2 hide-sm"
           color="purple-darken-4"
           :class="{ 'bg-white': task.done }"
           label
@@ -207,3 +207,11 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+@media screen and (max-width: 600px) {
+  .hide-sm {
+    display: none !important;
+  }
+}
+</style>
