@@ -13,6 +13,25 @@
       <v-list-item-title>{{ task.title }}</v-list-item-title>
       <template v-slot:append>
         <v-btn
+          v-if="!timerRunning"
+          color="grey-darken-2"
+          icon="mdi-play"
+          variant="text"
+          @click.stop="startTimer()"
+        ></v-btn>
+        <template v-else>
+          <v-chip class="ma-2" color="deep-purple-accent-1" :class="{ 'bg-white': task.done }" label>
+            <v-icon start icon="mdi-clock-outline"></v-icon>
+            {{ formattedTime }}
+          </v-chip>
+          <v-btn
+            color="grey-darken-2"
+            icon="mdi-pause"
+            variant="text"
+            @click.stop="stopTimer()"
+          ></v-btn>
+        </template>
+        <v-btn
           color="grey-darken-2"
           icon="mdi-pencil"
           variant="text"
@@ -50,8 +69,39 @@ export default {
   data: () => ({
     modalEdit: false,
     modalDelete: false,
+    timerRunning: false,
+    startTime: 0,
+    stopTime: 0,
+    currentTime: 0,
+    timeTracker: {
+      id: null,
+      startDate: null,
+      endDate: null,
+      timeZoneId: null,
+      createdAt: null,
+      updatedAt: null
+    }
   }),
   components: { ModalEdit, ModalDelete },
+  computed: {
+    formattedTime() {
+      if (this.timerRunning) {
+        let timeDifference = this.currentTime - this.startTime;
+        let hours = Math.floor((timeDifference / (1000 * 60 * 60)) % 24)
+          .toString()
+          .padStart(2, "0");
+        let minutes = Math.floor((timeDifference / (1000 * 60)) % 60)
+          .toString()
+          .padStart(2, "0");
+        let seconds = Math.floor((timeDifference / 1000) % 60)
+          .toString()
+          .padStart(2, "0");
+        return `${hours}:${minutes}:${seconds}`;
+      } else {
+        return "00:00:00";
+      }
+    }
+  },
   methods: {
     updateStatusTask(updatedTask) {
       this.$store.dispatch("updateStatusTask", updatedTask);
@@ -68,6 +118,37 @@ export default {
     closeModalDelete() {
       this.modalDelete = false;
     },
+    startTimer() {
+      clearInterval(this.timer);
+      this.startTime = Date.now();
+      this.timerRunning = true;
+      this.timer = setInterval(() => {
+        this.currentTime = Date.now();
+      }, 10);
+    },
+    stopTimer() {
+      this.saveTimer()
+      clearInterval(this.timer);
+      this.timerRunning = false;
+      this.currentTime = null;
+      this.startTime = null;
+    },
+    saveTimer() {
+      const now = Date.now()
+      this.timeTracker.id = Date.now()
+      this.timeTracker.startDate = this.startTime
+      this.timeTracker.endDate = now
+      this.timeTracker.timeZoneId = Intl.DateTimeFormat().resolvedOptions().timeZone
+      this.timeTracker.createdAt = now
+      this.timeTracker.updatedAt = now
+      this.addTimeTracker()
+    },
+    addTimeTracker() {
+      this.$store.dispatch("addTimeTracker", { 
+        taskId: this.task.id,
+        timeTracker: this.timeTracker,
+       });
+    }
   },
 };
 </script>

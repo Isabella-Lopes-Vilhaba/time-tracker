@@ -61,54 +61,57 @@ export default {
   // collaborators
 
   // timeTrackers
-  addTimeTracker(state, {commit}, taskId, timeTracker) {
-    const index = state.tasks.findIndex(task => task.id === taskId)
+  addTimeTracker({state, commit}, data) {
+    // data {taskId, timeTracker}
+    const index = state.tasks.findIndex(task => task.id === data.taskId)
     if(index !== -1) {
-      db.collection('tasks').doc({ id: taskId }).update({
-        timeTrackers: [...state.tasks[index].timeTrackers, timeTracker]
+      let newTimeTrackers = null
+      if([...state.tasks[index].timeTrackers].length == 0) {
+        newTimeTrackers = [Object.assign({},data.timeTracker)]
+      } else {
+        const updateTimeTracker = state.tasks[index].timeTrackers.map(proxy => JSON.parse(JSON.stringify(proxy)))
+        newTimeTrackers = [...updateTimeTracker, Object.assign({},data.timeTracker)]
+      }
+      db.collection('tasks').doc({ id: data.taskId }).update({
+        timeTrackers: newTimeTrackers
       }).then(() => {
         commit('getTasks')
-      })
+      }).catch((error) => {
+        console.log('Error updating document:', error);
+      });
     }
   },
-  updateTimeTracker(state, {commit}, taskId, timeTrackerId, newTimeTracker) {
-    const indexTask = state.tasks.findIndex(task => task.id === taskId)
-    const indexTimeTracker = state.tasks[indexTask].timeTrackers.findIndex(timeTracker => timeTracker.id === timeTrackerId)
-    const newTimeTrackers = state.tasks[indexTask].timeTrackers
-    newTimeTrackers[indexTimeTracker] = newTimeTracker
+  updateTimeTracker({state, commit}, data) {
+    // data {taskId, timeTrackerId, newTimeTracker}
+    const indexTask = state.tasks.findIndex(task => task.id === data.taskId)
+    const indexTimeTracker = state.tasks[indexTask].timeTrackers.findIndex(timeTracker => timeTracker.id === data.timeTrackerId)
     if(indexTask !== -1 && indexTimeTracker !== -1) {
-      db.collection('tasks').doc({ id: taskId }).update({
+      const newTimeTrackers = [Object.assign({}, data.newTimeTracker)]
+      db.collection('tasks').doc({ id: data.taskId }).update({
         timeTrackers: newTimeTrackers
       }).then(() => {
         commit('getTasks')
       })
     }
   },
-  deleteTimeTracker(state, {commit}, taskId, timeTrackerId) {
-    const indexTask = state.tasks.findIndex(task => task.id === taskId)
-    const indexTimeTracker = state.tasks[indexTask].timeTrackers.findIndex(timeTracker => timeTracker.id === timeTrackerId)
-    const newTimeTracker = state.tasks[indexTask].timeTrackers.splice(indexTimeTracker, 1)
+  deleteTimeTracker({state, commit}, data) {
+    // data {taskId, timeTrackerId}
+    const indexTask = state.tasks.findIndex(task => task.id === data.taskId)
+    const indexTimeTracker = state.tasks[indexTask].timeTrackers.findIndex(timeTracker => timeTracker.id === data.timeTrackerId)
     if(indexTask !== -1 && indexTimeTracker !== -1) {
-      db.collection('tasks').doc({ id: taskId }).update({
+      const newTimeTracker = [Object.assign({}, state.tasks[indexTask].timeTrackers.splice(indexTimeTracker, 1))]
+      db.collection('tasks').doc({ id: data.taskId }).update({
         timeTrackers: newTimeTracker
       }).then(() => {
         commit('getTasks')
       })
     }
   },
-  // {
-  //   id: new Date().getTime(),
-  //   startDate: timeTrackers.startDate,
-  //   endDate: timeTrackers.endDate,
-  //   timeZoneId: Intl.DateTimeFormat().resolvedOptions().timeZone,
-  //   createdAt: new Date(),
-  //   updatedAt: new Date(),
-  // }
 
   // tasks
   addTask({commit}, task) {
     db.collection('tasks').add({
-      id: new Date().getTime(),
+      id: Date.now(),
       title: task.title,
       done: false,
       description: task.description,
@@ -122,13 +125,14 @@ export default {
     })
   },
   updateTask({commit}, updatedTask) {
+    const updateTimeTracker = updatedTask.timeTrackers.map(proxy => JSON.parse(JSON.stringify(proxy)))
     db.collection('tasks').doc({ id: updatedTask.id }).update({
       title: updatedTask.title,
       description: updatedTask.description,
       projectId: updatedTask.projectId,
       collaboratorId: updatedTask.collaboratorId,
       updatedAt: new Date(),
-      timeTrackers: [...updatedTask.timeTrackers]
+      timeTrackers: [...updateTimeTracker]
     }).then(() => {
       commit('getTasks')
     })
@@ -150,7 +154,7 @@ export default {
   // projects
   addProject({commit}, project) {
     db.collection('projects').add({
-      id: new Date().getTime(),
+      id: Date.now(),
       name: project.name,
       createdAt: new Date(),
       updatedAt: new Date(),
