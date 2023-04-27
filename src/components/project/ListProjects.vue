@@ -1,6 +1,6 @@
 <template>
   <div>
-    <drop-list :items="computedProjects" @reorder="$event.apply(computedProjects)">
+    <drop-list :items="computedProjects" @reorder="$event.apply(computedProjects)" class="mb-15">
       <template v-slot:item="{ item, reorder }">
         <drag :key="item.id" :data="item">
           <ProjectComponent

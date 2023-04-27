@@ -12,7 +12,7 @@
         </div>
       </center>
     </div>
-    <div v-else>
+    <div v-else class="mb-15">
       <v-row justify="space-around">
         <LineChart :chartOptions="lineOptions" :chartData="lineData" />
         <BarChart :chartOptions="barOptions" :chartData="barData" />
