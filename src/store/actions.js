@@ -7,7 +7,7 @@ export default {
       if(!usersDB.length) {
         db.collection('users').add({
           id: 1,
-          userName: "Isabella",
+          userName: "Stuart",
           password: "$enha_Forte",
           createdAt: new Date(),
           updatedAt: new Date(),
@@ -23,28 +23,49 @@ export default {
       if(!collaboratorsDB.length) {
         db.collection('collaborators').add({
           id: 2,
-          name: "Anna",
+          name: "Sheldon",
           createdAt: new Date(),
           updatedAt: new Date(),
           deletedAt: null
         })
         db.collection('collaborators').add({
           id: 3,
-          name: "João",
+          name: "Amy",
           createdAt: new Date(),
           updatedAt: new Date(),
           deletedAt: null
         })
         db.collection('collaborators').add({
           id: 4,
-          name: "Mariana",
+          name: "Leonard",
           createdAt: new Date(),
           updatedAt: new Date(),
           deletedAt: null
         })
         db.collection('collaborators').add({
           id: 5,
-          name: "Carlos",
+          name: "Penny",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          deletedAt: null
+        })
+        db.collection('collaborators').add({
+          id: 6,
+          name: "Howard",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          deletedAt: null
+        })
+        db.collection('collaborators').add({
+          id: 7,
+          name: "Bernadette",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          deletedAt: null
+        })
+        db.collection('collaborators').add({
+          id: 8,
+          name: "Rajesh",
           createdAt: new Date(),
           updatedAt: new Date(),
           deletedAt: null
@@ -55,10 +76,85 @@ export default {
         commit('getCollaborators')
       }
     })
+    db.collection('projects').get().then(projectsDB => {
+      if(!projectsDB.length) {
+        db.collection('projects').add({
+          id: 9,
+          name: "Projeto Manhattan",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        })
+        db.collection('projects').add({
+          id: 10,
+          name: "Iniciativa Vingadores",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        })
+        db.collection('projects').add({
+          id: 11,
+          name: "Apollo 11",
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        }).then(() => {
+          commit('getProjects')
+        })
+      } else {
+        commit('getProjects')
+      }
+    })
+    db.collection('tasks').get().then(tasksDB => {
+      if(!tasksDB.length) {
+        db.collection('tasks').add({
+          id: Date.now(),
+          title: "Construir foguete",
+          done: false,
+          description: "Construir um foguete que ultrapasse a velocidade da luz",
+          projectId: 11,
+          collaboratorId: 2,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          timeTrackers: []
+        })
+        db.collection('tasks').add({
+          id: Date.now(),
+          title: "Salvar o universo",
+          done: false,
+          description: "Derrotar Thanos",
+          projectId: 10,
+          collaboratorId: 7,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          timeTrackers: []
+        })
+        db.collection('tasks').add({
+          id: Date.now(),
+          title: "Criar apresentação",
+          done: true,
+          description: "Criar apresentação do projeto para ao general",
+          projectId: 9,
+          collaboratorId: 4,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          timeTrackers: []
+        })
+        db.collection('tasks').add({
+          id: Date.now(),
+          title: "Consertar trilhos do trem",
+          done: false,
+          description: "O trilho 202 está danificadas e pode causar o descarrilamento de um trem",
+          projectId: 10,
+          collaboratorId: 2,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          timeTrackers: []
+        }).then(() => {
+          commit('getTasks')
+        })
+      } else {
+        commit('getTasks')
+      }
+    })
   },
-  // users
-
-  // collaborators
 
   // timeTrackers
   addTimeTracker({state, commit}, data) {

@@ -68,6 +68,12 @@ export default {
     drawer: false,
     items: [
       {
+        prependicon: "mdi-chart-box-outline",
+        title: "Dashboard",
+        value: "dashboard",
+        to: "/dashboard",
+      },
+      {
         prependicon: "mdi-calendar-check-outline",
         title: "Tarefas",
         value: "tarefas",
@@ -78,11 +84,11 @@ export default {
         title: "Projetos",
         value: "projetos",
         to: "/projects",
-      },
+      }
     ],
   }),
   created() {
-    this.$router.push("/task");
+    this.$router.push("/dashboard");
     this.$store.commit("getTasks");
     this.$store.commit("getProjects");
     this.$store.dispatch("popularDatabase");
